@@ -1,0 +1,136 @@
+html,
+body {
+  background-color: #222831;
+  color: #EEEEEE !important;
+  letter-spacing: 1px;
+}
+
+/* Navbar */
+.navbar {
+    padding: 10px;
+    border: none !important;
+    background-color: #222831;
+    border-bottom: solid #393E46 !important;
+}
+.navbar-nav .nav-link, .svg-inline--fa {
+    color: #EEEEEE !important;
+}
+
+/* Grid */
+.box-custom {
+    border-radius: 20px;
+    border: solid #393E46;
+    padding: 15px;
+}
+.box {
+    border-radius: 10px;
+    border: solid #393E46;
+    padding: 10px;
+}
+
+/* Logo Text */
+.text-custom {
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 5px;
+    background: linear-gradient(90deg, #68b0ab, #ff7e67) no-repeat;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+.text-custom:hover {
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 5px;
+    background: linear-gradient(90deg, #ff7e67, #68b0ab) no-repeat;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+/* Input */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 0px;
+    margin-left: 0px;
+    color: #EEEEEE !important;
+    border-radius: 10px !important;
+    background-color: #222831 !important;
+    border: solid #393E46 !important;
+    outline: none !important;
+}
+input:focus {
+    outline: none !important;
+}
+input::placeholder {
+    color: #EEEEEE;
+    letter-spacing: 1px;
+}
+
+/* Button */
+button {
+    padding: 10px !important;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+    color: #EEEEEE !important;
+    border-radius: 10px !important;
+    background-color: #222831 !important;
+    border: solid #393E46 !important;
+    outline: none !important;
+}
+button:hover {
+    background-color: #393E46 !important;
+}
+button .svg-inline--fa {
+    padding-right: 10px;
+}
+.btn-datepicker {
+    margin-bottom: 5px;
+}
+
+/* Modal */
+.modal-content {
+    padding: 15px;
+    border-radius: 20px;
+    background-color: #222831;
+}
+
+.text-display {
+    text-transform: capitalize;
+}
+
+/* Select */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.dropdown-menu {
+    margin: 0px !important;
+    padding: 0px !important;
+    background-color: #222831;
+    border: none;
+}
+
+.dropdown-menu button {
+    width: 100%;
+}
+
+.notifications {
+    bottom: 5px !important;
+    right: 5px !important;
+    top: auto !important;
+}
+.vue-notification {
+    background-color: #393E46 !important;
+    border-left-color: #393E46 !important;
+    border-radius: 10px;
+    border: solid #393E46;
+    padding: 10px;
+}
