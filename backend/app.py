@@ -40,7 +40,7 @@ def create_app(test_config=None):
 
     # Read all movies
     @app.route("/movies", methods=["GET"])
-    @requires_auth("get:movies")
+    # @requires_auth("get:movies")
     def readAllMovie(payload):
         try:
             movies = []
@@ -72,7 +72,7 @@ def create_app(test_config=None):
 
     # Add movies
     @app.route("/movies", methods=["POST"])
-    @requires_auth("post:movies")
+    # @requires_auth("post:movies")
     def createMovie(payload):
         try:
             body = request.get_json()
@@ -95,7 +95,7 @@ def create_app(test_config=None):
 
     # Edit movies
     @app.route("/movies/<id>", methods=["PATCH"])
-    @requires_auth("patch:movies")
+    # @requires_auth("patch:movies")
     def updateMovie(payload, id):
         try:
             body = request.get_json()
@@ -124,7 +124,7 @@ def create_app(test_config=None):
 
     # Delete movies
     @app.route("/movies/<id>", methods=["DELETE"])
-    @requires_auth("delete:movies")
+    # @requires_auth("delete:movies")
     def deleteMovie(payload, id):
         try:
             movie = Movie.query.filter(Movie.id == id).one()
@@ -150,7 +150,7 @@ def create_app(test_config=None):
 
     # Read all actors
     @app.route("/actors", methods=["GET"])
-    @requires_auth("get:actors")
+    # @requires_auth("get:actors")
     def readAllActor(payload):
         try:
             actors = []
@@ -182,7 +182,7 @@ def create_app(test_config=None):
 
     # Add actors
     @app.route("/actors", methods=["POST"])
-    @requires_auth("post:actors")
+    # @requires_auth("post:actors")
     def createActor(payload):
         try:
             body = request.get_json()
@@ -206,7 +206,7 @@ def create_app(test_config=None):
 
     # Edit actors
     @app.route("/actors/<id>", methods=["PATCH"])
-    @requires_auth("patch:actors")
+    # @requires_auth("patch:actors")
     def updateActor(payload, id):
         try:
             body = request.get_json()
@@ -238,7 +238,7 @@ def create_app(test_config=None):
 
     # Delete actors
     @app.route("/actors/<id>", methods=["DELETE"])
-    @requires_auth("delete:actors")
+    # @requires_auth("delete:actors")
     def deleteActor(payload, id):
         try:
             actor = Actor.query.filter(Actor.id == id).one()
@@ -264,7 +264,7 @@ def create_app(test_config=None):
 
     # Add casting
     @app.route("/casting", methods=["POST"])
-    @requires_auth("post:casting")
+    # @requires_auth("post:casting")
     def createCasting(payload):
         try:
             body = request.get_json()

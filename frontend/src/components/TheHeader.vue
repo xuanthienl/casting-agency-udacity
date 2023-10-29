@@ -43,11 +43,11 @@
 
 <script>
 export default {
-    mounted() {
-        if (!this.$store.getters.loggedIn) {
-            this.Login()
-        }
-    },
+    // mounted() {
+    //     if (!this.$store.getters.loggedIn) {
+    //         this.Login()
+    //     }
+    // },
     methods: {
         Login() {
             this.$store.dispatch('login')
