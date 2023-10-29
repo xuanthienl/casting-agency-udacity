@@ -18,10 +18,10 @@
 export default {
     methods: {
         MoviesPage() {
-            this.$router.push({ name: 'movie' })
+            this.$router.push({ name: 'movies' })
         },
         ActorsPage() {
-            this.$router.push({ name: 'actor' })
+            this.$router.push({ name: 'actors' })
         }
     }
 }

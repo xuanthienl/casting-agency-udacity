@@ -10,8 +10,8 @@ import Login from './views/TheLogin.vue';
 
 const routes = [
     { path: '/', name: 'home', component: Home },
-    { path: '/movie', name: 'movie', component: Movie },
-    { path: '/actor', name: 'actor', component: Actor },
+    { path: '/movies', name: 'movies', component: Movie },
+    { path: '/actors', name: 'actors', component: Actor },
     { path: '/casting', name: 'casting', component: Casting },
     { path: '/login-results', name: 'login', component: Login },
     { path: '/:pathMatch(.*)*', redirect: { name: 'home' } }

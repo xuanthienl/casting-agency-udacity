@@ -9,12 +9,12 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link" :to="{ name: 'movie' }"
-                            v-bind:class="[$route.name == 'movie' ? 'active' : '']">Movie</router-link>
+                        <router-link class="nav-link" :to="{ name: 'movies' }"
+                            v-bind:class="[$route.name == 'movies' ? 'active' : '']">Movies</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" :to="{ name: 'actor' }"
-                            v-bind:class="[$route.name == 'actor' ? 'active' : '']">Actor</router-link>
+                        <router-link class="nav-link" :to="{ name: 'actors' }"
+                            v-bind:class="[$route.name == 'actors' ? 'active' : '']">Actors</router-link>
                     </li>
                     <li class="nav-item">
                         <router-link class="nav-link" :to="{ name: 'casting' }"

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify, render_template
+from flask import Flask, request, abort, jsonify, render_template, redirect
 from sqlalchemy.orm.exc import NoResultFound
 from flask_cors import CORS
 
@@ -10,14 +10,30 @@ from .auth.auth import AuthError, requires_auth
 
 def create_app(test_config=None):
 
-    app = Flask(__name__, static_folder='../frontend/dist/', static_url_path='/')
+    # app = Flask(__name__, static_folder='../frontend/dist/', static_url_path='/')
+    # setup_db(app)
+    # CORS(app)
+
+    # @app.route('/')
+    # def index():
+    #     return app.send_static_file('index.html')
+    
+    # @app.route('/movies')
+    # def movies():
+    #     return redirect('/movies')
+    
+    # @app.route('/actors')
+    # def actors():
+    #     return redirect('/actors')
+    
+    app = Flask(__name__)
     setup_db(app)
     CORS(app)
 
-    @app.route('/')
-    def index():
-        return app.send_static_file('index.html')
-
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def catch_all(path):
+        return app.send_static_file("index.html")
 
     """
     CORS Headers
@@ -25,8 +41,7 @@ def create_app(test_config=None):
     @app.after_request
     def after_request(response):
         response.headers.add(
-            # "Access-Control-Allow-Headers", "Content-Type,Authorization,false"
-            "Access-Control-Allow-Headers", "Content-Type"
+            "Access-Control-Allow-Headers", "Content-Type,Authorization,false"
         )
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
@@ -41,8 +56,8 @@ def create_app(test_config=None):
 
     # Read all movies
     @app.route("/movies", methods=["GET"])
-    # @requires_auth("get:movies")
-    def readAllMovie():
+    @requires_auth("get:movies")
+    def readAllMovie(payload):
         try:
             movies = []
             
@@ -73,8 +88,8 @@ def create_app(test_config=None):
 
     # Add movies
     @app.route("/movies", methods=["POST"])
-    # @requires_auth("post:movies")
-    def createMovie():
+    @requires_auth("post:movies")
+    def createMovie(payload):
         try:
             body = request.get_json()
             movie = Movie(
@@ -96,8 +111,8 @@ def create_app(test_config=None):
 
     # Edit movies
     @app.route("/movies/<id>", methods=["PATCH"])
-    # @requires_auth("patch:movies")
-    def updateMovie(id):
+    @requires_auth("patch:movies")
+    def updateMovie(payload, id):
         try:
             body = request.get_json()
             title = body.get("title", None)
@@ -125,8 +140,8 @@ def create_app(test_config=None):
 
     # Delete movies
     @app.route("/movies/<id>", methods=["DELETE"])
-    # @requires_auth("delete:movies")
-    def deleteMovie(id):
+    @requires_auth("delete:movies")
+    def deleteMovie(payload, id):
         try:
             movie = Movie.query.filter(Movie.id == id).one()
             db.session.delete(movie)
@@ -151,8 +166,8 @@ def create_app(test_config=None):
 
     # Read all actors
     @app.route("/actors", methods=["GET"])
-    # @requires_auth("get:actors")
-    def readAllActor():
+    @requires_auth("get:actors")
+    def readAllActor(payload):
         try:
             actors = []
             
@@ -183,8 +198,8 @@ def create_app(test_config=None):
 
     # Add actors
     @app.route("/actors", methods=["POST"])
-    # @requires_auth("post:actors")
-    def createActor():
+    @requires_auth("post:actors")
+    def createActor(payload):
         try:
             body = request.get_json()
             actor = Actor(
@@ -207,8 +222,8 @@ def create_app(test_config=None):
 
     # Edit actors
     @app.route("/actors/<id>", methods=["PATCH"])
-    # @requires_auth("patch:actors")
-    def updateActor(id):
+    @requires_auth("patch:actors")
+    def updateActor(payload, id):
         try:
             body = request.get_json()
             name = body.get("name", None)
@@ -239,8 +254,8 @@ def create_app(test_config=None):
 
     # Delete actors
     @app.route("/actors/<id>", methods=["DELETE"])
-    # @requires_auth("delete:actors")
-    def deleteActor(id):
+    @requires_auth("delete:actors")
+    def deleteActor(payload, id):
         try:
             actor = Actor.query.filter(Actor.id == id).one()
             db.session.delete(actor)
@@ -265,8 +280,8 @@ def create_app(test_config=None):
 
     # Add casting
     @app.route("/casting", methods=["POST"])
-    # @requires_auth("post:casting")
-    def createCasting():
+    @requires_auth("post:casting")
+    def createCasting(payload):
         try:
             body = request.get_json()
             movie_id = body.get("movie", None)
