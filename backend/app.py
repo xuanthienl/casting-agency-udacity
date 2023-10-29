@@ -3,8 +3,10 @@ from flask import Flask, request, abort, jsonify, render_template
 from sqlalchemy.orm.exc import NoResultFound
 from flask_cors import CORS
 
-from models import setup_db, db, Movie, Actor, Casting
-from auth import AuthError, requires_auth
+# from models import setup_db, db, Movie, Actor, Casting
+# from auth import AuthError, requires_auth
+from .database.models import setup_db, db, Movie, Actor, Casting
+from .auth.auth import AuthError, requires_auth
 
 def create_app(test_config=None):
 
