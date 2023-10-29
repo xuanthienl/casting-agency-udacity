@@ -28,12 +28,12 @@ def create_app(test_config=None):
     
     app = Flask(__name__)
     setup_db(app)
-    CORS(app)
+    CORS(app, resources={r'/*': {'origins': '*'}})
 
-    @app.route('/', defaults={'path': ''})
-    @app.route('/<path:path>')
-    def catch_all(path):
-        return app.send_static_file("index.html")
+    # @app.route('/', defaults={'path': ''})
+    # @app.route('/<path:path>')
+    # def catch_all(path):
+    #     return app.send_static_file("index.html")
 
     """
     CORS Headers
