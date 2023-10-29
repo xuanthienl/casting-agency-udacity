@@ -28,6 +28,8 @@ To start and run the local development server,
 
   ```
   $ createdb -U postgres casting_agency
+  $ chmod +x setup.sh
+  $ source setup.sh
   $ flask db init
   $ flask db migrate
   $ flask db upgrade
