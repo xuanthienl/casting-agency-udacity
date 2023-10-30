@@ -39,7 +39,8 @@ def create_app(test_config=None):
     @app.after_request
     def after_request(response):
         response.headers.add(
-            "Access-Control-Allow-Headers", "Content-Type,Authorization,false"
+            # "Access-Control-Allow-Headers", "Content-Type,Authorization,false"
+            "Access-Control-Allow-Headers", "Content-Type"
         )
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
@@ -54,8 +55,8 @@ def create_app(test_config=None):
 
     # Read all movies
     @app.route("/movies", methods=["GET"])
-    @requires_auth("get:movies")
-    def readAllMovie(payload):
+    # @requires_auth("get:movies")
+    def readAllMovie():
         try:
             movies = []
             
@@ -86,8 +87,8 @@ def create_app(test_config=None):
 
     # Add movies
     @app.route("/movies", methods=["POST"])
-    @requires_auth("post:movies")
-    def createMovie(payload):
+    # @requires_auth("post:movies")
+    def createMovie():
         try:
             body = request.get_json()
             movie = Movie(
@@ -109,8 +110,8 @@ def create_app(test_config=None):
 
     # Edit movies
     @app.route("/movies/<id>", methods=["PATCH"])
-    @requires_auth("patch:movies")
-    def updateMovie(payload, id):
+    # @requires_auth("patch:movies")
+    def updateMovie(id):
         try:
             body = request.get_json()
             title = body.get("title", None)
@@ -138,8 +139,8 @@ def create_app(test_config=None):
 
     # Delete movies
     @app.route("/movies/<id>", methods=["DELETE"])
-    @requires_auth("delete:movies")
-    def deleteMovie(payload, id):
+    # @requires_auth("delete:movies")
+    def deleteMovie(id):
         try:
             movie = Movie.query.filter(Movie.id == id).one()
             db.session.delete(movie)
@@ -164,8 +165,8 @@ def create_app(test_config=None):
 
     # Read all actors
     @app.route("/actors", methods=["GET"])
-    @requires_auth("get:actors")
-    def readAllActor(payload):
+    # @requires_auth("get:actors")
+    def readAllActor():
         try:
             actors = []
             
@@ -196,8 +197,8 @@ def create_app(test_config=None):
 
     # Add actors
     @app.route("/actors", methods=["POST"])
-    @requires_auth("post:actors")
-    def createActor(payload):
+    # @requires_auth("post:actors")
+    def createActor():
         try:
             body = request.get_json()
             actor = Actor(
@@ -220,8 +221,8 @@ def create_app(test_config=None):
 
     # Edit actors
     @app.route("/actors/<id>", methods=["PATCH"])
-    @requires_auth("patch:actors")
-    def updateActor(payload, id):
+    # @requires_auth("patch:actors")
+    def updateActor(id):
         try:
             body = request.get_json()
             name = body.get("name", None)
@@ -252,8 +253,8 @@ def create_app(test_config=None):
 
     # Delete actors
     @app.route("/actors/<id>", methods=["DELETE"])
-    @requires_auth("delete:actors")
-    def deleteActor(payload, id):
+    # @requires_auth("delete:actors")
+    def deleteActor(id):
         try:
             actor = Actor.query.filter(Actor.id == id).one()
             db.session.delete(actor)
@@ -278,8 +279,8 @@ def create_app(test_config=None):
 
     # Add casting
     @app.route("/casting", methods=["POST"])
-    @requires_auth("post:casting")
-    def createCasting(payload):
+    # @requires_auth("post:casting")
+    def createCasting():
         try:
             body = request.get_json()
             movie_id = body.get("movie", None)
