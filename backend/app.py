@@ -1,22 +1,20 @@
 import os
-from flask import Flask, request, abort, jsonify, render_template, redirect
+from flask import Flask, request, abort, jsonify, render_template
 from sqlalchemy.orm.exc import NoResultFound
 from flask_cors import CORS
 
-# from models import setup_db, db, Movie, Actor, Casting
-# from auth import AuthError, requires_auth
 from .database.models import setup_db, db, Movie, Actor, Casting
 from .auth.auth import AuthError, requires_auth
 
 def create_app(test_config=None):
 
-    # app = Flask(__name__, static_folder='../frontend/dist/', static_url_path='/')
-    # setup_db(app)
-    # CORS(app)
+    app = Flask(__name__, static_folder='../frontend/dist/', static_url_path='/')
+    setup_db(app)
+    CORS(app)
 
-    # @app.route('/')
-    # def index():
-    #     return app.send_static_file('index.html')
+    @app.route('/')
+    def index():
+        return app.send_static_file('index.html')
     
     # @app.route('/movies')
     # def movies():
@@ -26,9 +24,9 @@ def create_app(test_config=None):
     # def actors():
     #     return redirect('/actors')
     
-    app = Flask(__name__)
-    setup_db(app)
-    CORS(app, resources={r'/*': {'origins': '*'}})
+    # app = Flask(__name__)
+    # setup_db(app)
+    # CORS(app, resources={r'/*': {'origins': '*'}})
 
     # @app.route('/', defaults={'path': ''})
     # @app.route('/<path:path>')

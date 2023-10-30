@@ -12,13 +12,13 @@ To start and run the local development server,
   ```
   $ cd YOUR_PROJECT_DIRECTORY_PATH/
   $ python3 -m venv env
-  $ source env/bin/activate (Unix/macOS) / env\Scripts\activate (Windows)
+  $ source env/bin/activate
   ```
 
 2. Install the dependencies:
 
   ```
-  $ cd backend
+  $ python3 -m pip install --upgrade pip
   $ python3 -m pip install -r requirements.txt
   ```
 

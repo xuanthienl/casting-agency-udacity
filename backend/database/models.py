@@ -14,6 +14,7 @@ database_path = "{}://{}:{}@{}:{}/{}".format(
     os.getenv("DB_DATABASE")
 )
 
+# Deploy Heroku
 database_path = os.environ['DATABASE_URL']
 if database_path.startswith("postgres://"):
     database_path = database_path.replace("postgres://", "postgresql://", 1)
