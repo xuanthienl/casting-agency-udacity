@@ -5,8 +5,8 @@ from flask_cors import CORS
 from werkzeug.exceptions import NotFound
 import requests
 from dotenv import load_dotenv
-from ..database.models import setup_db, db, Movie, Actor, Casting
-from ..auth.auth import AuthError, requires_auth
+from .database.models import setup_db, db, Movie, Actor, Casting
+from .auth.auth import AuthError, requires_auth
 
 
 def create_app(test_config=None):
