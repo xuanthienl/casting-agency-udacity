@@ -2,18 +2,16 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
-import Home from './views/TheHome.vue';
-import Movie from './views/TheMovie.vue';
-import Actor from './views/TheActor.vue';
-import Casting from './views/TheCasting.vue';
-import Login from './views/TheLogin.vue';
+import Home from './views/ViewHome.vue';
+import Movie from './views/ViewMovies.vue';
+import Actor from './views/ViewActors.vue';
+import Casting from './views/ViewCasting.vue';
 
 const routes = [
     { path: '/', name: 'home', component: Home },
     { path: '/movies', name: 'movies', component: Movie },
     { path: '/actors', name: 'actors', component: Actor },
     { path: '/casting', name: 'casting', component: Casting },
-    { path: '/login-results', name: 'login', component: Login },
     { path: '/:pathMatch(.*)*', redirect: { name: 'home' } }
 ];
 

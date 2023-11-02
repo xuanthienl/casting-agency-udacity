@@ -4,7 +4,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
-        token: localStorage.getItem('access_token') || null
+        token: localStorage.getItem('access_token') ? JSON.parse(localStorage.getItem('access_token')).value : null
     },
     getters: {
         loggedIn(state) {
@@ -18,24 +18,31 @@ const store = new Vuex.Store({
         }
     },
     actions: {
-        login() {
-            window.location.href = 'https://' + process.env.VUE_APP_AUTH0_DOMAIN +
-                '/authorize?audience=' + process.env.VUE_APP_AUTH0_API_AUDIENCE +
-                '&response_type=' + process.env.VUE_APP_AUTH0_RESPONSE_TYPE +
-                '&client_id=' + process.env.VUE_APP_AUTH0_CLIENT_ID +
-                '&redirect_uri=' + process.env.VUE_APP_AUTH0_CALLBACK_URL
+        setJWT({ commit }, data) {
+            const now = new Date();
+            const token = {
+                value: data.access_token,
+                expiry: now.getTime() + data.expires_in * 1000
+            };
+            localStorage.setItem('access_token', JSON.stringify(token));
+            commit('setJWT', data.access_token)
         },
-        logout({ commit }) {
+        getJWT({ commit }) {
+            const accessToken = localStorage.getItem('access_token');
+            if (!accessToken) {
+                commit('setJWT', null)
+            }
+            const token = JSON.parse(accessToken);
+            const now = new Date().getTime();
+            if (now > token.expiry) {
+                localStorage.removeItem('access_token');
+                commit('setJWT', null)
+            }
+            return token.value;
+        },
+        logOut({ commit }) {
             localStorage.removeItem('access_token')
             commit('setJWT', null)
-        },
-        setJWT({ commit }, hash) {
-            const fragment = hash.substr(1).split('&')[0].split('=');
-            if (fragment[0] === 'access_token') {
-                const token = fragment[1];
-                localStorage.setItem('access_token', token)
-                commit('setJWT', token)
-            }
         }
     },
 });

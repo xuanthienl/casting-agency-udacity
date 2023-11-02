@@ -13,7 +13,6 @@ database_path = "{}://{}:{}@{}:{}/{}".format(
     os.getenv("DB_PORT"),
     os.getenv("DB_DATABASE")
 )
-
 # Deploy Heroku
 database_path = os.environ['DATABASE_URL']
 if database_path.startswith("postgres://"):
@@ -21,16 +20,14 @@ if database_path.startswith("postgres://"):
 
 db = SQLAlchemy()
 
-'''
-setup_db(app)
-    binds a flask application and a SQLAlchemy service
-'''
+
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
     Migrate(app, db)
+
 
 class Movie(db.Model):
     __tablename__ = 'Movie'
@@ -43,13 +40,14 @@ class Movie(db.Model):
 
     def __repr__(self):
         return f"Movie(id={self.id}, title={self.title}, release_date={self.release_date})"
-    
+
     def format(self):
         return {
             'id': self.id,
             'title': self.title,
             'release_date': self.release_date.strftime("%Y-%m-%d")
         }
+
 
 class Actor(db.Model):
     __tablename__ = 'Actor'
@@ -63,7 +61,7 @@ class Actor(db.Model):
 
     def __repr__(self):
         return f"Actor(id={self.id}, name={self.name}, fullname={self.age}, gender={self.gender})"
-    
+
     def format(self):
         return {
             'id': self.id,
@@ -71,6 +69,7 @@ class Actor(db.Model):
             'age': self.age,
             'gender': self.gender
         }
+
 
 class Casting(db.Model):
     __tablename__ = 'Casting'
@@ -81,7 +80,7 @@ class Casting(db.Model):
 
     def __repr__(self):
         return f"Casting(id={self.id}, movie_id={self.movie_id}, actor_id={self.actor_id})"
-    
+
     def format(self):
         return {
             'id': self.id,

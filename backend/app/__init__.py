@@ -1,62 +1,103 @@
 import os
-from flask import Flask, request, abort, jsonify, render_template
+from flask import Flask, request, abort, jsonify, redirect, url_for
 from sqlalchemy.orm.exc import NoResultFound
 from flask_cors import CORS
+from werkzeug.exceptions import NotFound
+import requests
+from dotenv import load_dotenv
+from database.models import setup_db, db, Movie, Actor, Casting
+from auth.auth import AuthError, requires_auth
 
-from .database.models import setup_db, db, Movie, Actor, Casting
-from .auth.auth import AuthError, requires_auth
 
 def create_app(test_config=None):
 
     app = Flask(__name__, static_folder='../frontend/dist/', static_url_path='/')
-    setup_db(app)
+    if test_config is not None:
+        setup_db(app, test_config['database_path'])
+    else:
+        setup_db(app)
     CORS(app)
 
-    @app.route('/')
-    def index():
-        return app.send_static_file('index.html')
-    
-    # @app.route('/movies')
-    # def movies():
-    #     return redirect('/movies')
-    
-    # @app.route('/actors')
-    # def actors():
-    #     return redirect('/actors')
-    
-    # app = Flask(__name__)
-    # setup_db(app)
-    # CORS(app, resources={r'/*': {'origins': '*'}})
+    AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
+    CLIENT_ID = os.getenv("CLIENT_ID")
+    CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+    API_AUDIENCE = os.getenv("API_AUDIENCE")
 
-    # @app.route('/', defaults={'path': ''})
-    # @app.route('/<path:path>')
-    # def catch_all(path):
-    #     return app.send_static_file("index.html")
+    #  ----------------------------------------------------------------
+    #  Home
+    #  ----------------------------------------------------------------
 
-    """
-    CORS Headers
-    """
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def catch_all(path):
+        return app.send_static_file("index.html")
+
+    @app.errorhandler(NotFound)
+    def not_found(error):
+        return redirect(url_for('catch_all'))
+    
+    #  ----------------------------------------------------------------
+    #  Log In
+    #  ----------------------------------------------------------------
+    
+    @app.route('/login', methods=['POST'])
+    def login():
+        try:
+            body = request.get_json()
+            username = body.get('username')
+            password = body.get('password')
+
+            url = f'https://{AUTH0_DOMAIN}/oauth/token'
+            payload = {
+                "username":username,
+                "password":password,
+                "client_id":CLIENT_ID,
+                "client_secret":CLIENT_SECRET,
+                "audience":API_AUDIENCE,
+                "grant_type":"password"
+            }
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(url, json=payload, headers=headers)
+
+            if response.status_code == 200:
+                response = response.json()
+                return jsonify(
+                    {
+                        "success": True,
+                        "data": {
+                            "access_token": response.get('access_token'),
+                            "expires_in": response.get('expires_in')
+                        }
+                    }
+                )
+            else:
+                abort(422)
+        except Exception as e:
+            print(e)
+            abort(500)
+
+    #  ----------------------------------------------------------------
+    #  CORS Headers
+    #  ----------------------------------------------------------------
+
     @app.after_request
     def after_request(response):
         response.headers.add(
-            # "Access-Control-Allow-Headers", "Content-Type,Authorization,false"
-            "Access-Control-Allow-Headers", "Content-Type"
+            "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
         )
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
         )
         return response
     
-
     #  ----------------------------------------------------------------
     #  Movies
     #  ----------------------------------------------------------------
 
-
     # Read all movies
     @app.route("/movies", methods=["GET"])
-    # @requires_auth("get:movies")
-    def readAllMovie():
+    @requires_auth("get:movies")
+    def readAllMovie(payload):
         try:
             movies = []
             
@@ -84,11 +125,10 @@ def create_app(test_config=None):
             print(e)
             abort(500)
 
-
     # Add movies
     @app.route("/movies", methods=["POST"])
-    # @requires_auth("post:movies")
-    def createMovie():
+    @requires_auth("post:movies")
+    def createMovie(payload):
         try:
             body = request.get_json()
             movie = Movie(
@@ -107,11 +147,10 @@ def create_app(test_config=None):
             print(e)
             abort(422)
 
-
     # Edit movies
     @app.route("/movies/<id>", methods=["PATCH"])
-    # @requires_auth("patch:movies")
-    def updateMovie(id):
+    @requires_auth("patch:movies")
+    def updateMovie(payload, id):
         try:
             body = request.get_json()
             title = body.get("title", None)
@@ -130,17 +169,16 @@ def create_app(test_config=None):
             })
         except NoResultFound as e:
             print(e)
-            abort(404)
+            raise NoResultFound
         except Exception as e:
             db.session.rollback()
             print(e)
             abort(422)
 
-
     # Delete movies
     @app.route("/movies/<id>", methods=["DELETE"])
-    # @requires_auth("delete:movies")
-    def deleteMovie(id):
+    @requires_auth("delete:movies")
+    def deleteMovie(payload, id):
         try:
             movie = Movie.query.filter(Movie.id == id).one()
             db.session.delete(movie)
@@ -151,22 +189,20 @@ def create_app(test_config=None):
             })
         except NoResultFound as e:
             print(e)
-            abort(404)
+            raise NoResultFound
         except Exception as e:
             db.session.rollback()
             print(e)
-            abort(422)
-
+            abort(500)
 
     #  ----------------------------------------------------------------
     #  Actors
     #  ----------------------------------------------------------------
 
-
     # Read all actors
     @app.route("/actors", methods=["GET"])
-    # @requires_auth("get:actors")
-    def readAllActor():
+    @requires_auth("get:actors")
+    def readAllActor(payload):
         try:
             actors = []
             
@@ -194,11 +230,10 @@ def create_app(test_config=None):
             print(e)
             abort(500)
 
-
     # Add actors
     @app.route("/actors", methods=["POST"])
-    # @requires_auth("post:actors")
-    def createActor():
+    @requires_auth("post:actors")
+    def createActor(payload):
         try:
             body = request.get_json()
             actor = Actor(
@@ -218,11 +253,10 @@ def create_app(test_config=None):
             print(e)
             abort(422)
 
-
     # Edit actors
     @app.route("/actors/<id>", methods=["PATCH"])
-    # @requires_auth("patch:actors")
-    def updateActor(id):
+    @requires_auth("patch:actors")
+    def updateActor(payload, id):
         try:
             body = request.get_json()
             name = body.get("name", None)
@@ -244,17 +278,16 @@ def create_app(test_config=None):
             })
         except NoResultFound as e:
             print(e)
-            abort(404)
+            raise NoResultFound
         except Exception as e:
-            db.session.rollback()
             print(e)
+            db.session.rollback()
             abort(422)
-
 
     # Delete actors
     @app.route("/actors/<id>", methods=["DELETE"])
-    # @requires_auth("delete:actors")
-    def deleteActor(id):
+    @requires_auth("delete:actors")
+    def deleteActor(payload, id):
         try:
             actor = Actor.query.filter(Actor.id == id).one()
             db.session.delete(actor)
@@ -265,22 +298,20 @@ def create_app(test_config=None):
             })
         except NoResultFound as e:
             print(e)
-            abort(404)
+            raise NoResultFound
         except Exception as e:
             db.session.rollback()
             print(e)
-            abort(422)
-
+            abort(500)
 
     #  ----------------------------------------------------------------
-    #  Actors
+    #  Casting
     #  ----------------------------------------------------------------
-
 
     # Add casting
     @app.route("/casting", methods=["POST"])
-    # @requires_auth("post:casting")
-    def createCasting():
+    @requires_auth("post:casting")
+    def createCasting(payload):
         try:
             body = request.get_json()
             movie_id = body.get("movie", None)
@@ -301,17 +332,15 @@ def create_app(test_config=None):
             })
         except NoResultFound as e:
             print(e)
-            abort(404)
+            raise NoResultFound
         except Exception as e:
             db.session.rollback()
             print(e)
             abort(422)
 
-
     #  ----------------------------------------------------------------
     #  Errors
     #  ----------------------------------------------------------------
-
 
     @app.errorhandler(400)
     def bad_request(error):
@@ -320,12 +349,12 @@ def create_app(test_config=None):
             400
         )
 
-    @app.errorhandler(404)
-    def not_found(error):
-        return (
-            jsonify({"success": False, "error": 404, "message": "Not Found"}),
-            404
-        )
+    # @app.errorhandler(404)
+    # def not_found(error):
+    #     return (
+    #         jsonify({"success": False, "error": 404, "message": "Not Found"}),
+    #         404
+    #     )
 
     @app.errorhandler(422)
     def unprocessable_entity(error):
@@ -347,6 +376,13 @@ def create_app(test_config=None):
             jsonify({"success": False, "error": 500, "message": "Internal Server Error"}),
             500
         )
+        
+    @app.errorhandler(NoResultFound)
+    def no_result_found(error):
+        return (
+            jsonify({"success": False, "error": 404, "message": "No Result Found"}),
+            404
+        )
     
     @app.errorhandler(AuthError)
     def auth_error(error):
@@ -355,7 +391,9 @@ def create_app(test_config=None):
             error.status_code
         )
 
+
     return app
+
 
 app = create_app()
 

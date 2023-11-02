@@ -27,9 +27,12 @@ body {
     border: solid #393E46;
     padding: 10px;
 }
+.box-text {
+    padding-bottom: 10px;
+}
 
 /* Logo Text */
-.text-custom {
+.text-custom, .box-text h4, .box-text p {
     font-weight: 700;
     cursor: pointer;
     margin-right: 5px;

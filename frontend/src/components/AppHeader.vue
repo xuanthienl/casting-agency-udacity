@@ -22,17 +22,14 @@
                     </li>
                 </ul>
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="user" data-bs-toggle="dropdown" aria-expanded="false">
-                        <font-awesome-icon icon="house-chimney-user"/>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="user" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <font-awesome-icon icon="house-chimney-user" />
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user">
-                        <button type="button" v-if="!this.$store.getters.loggedIn" v-on:click="Login()">
-                            <font-awesome-icon icon="fa-solid fa-circle-chevron-up" />
-                            Login
-                        </button>
                         <button type="button" v-if="this.$store.getters.loggedIn" v-on:click="Logout()">
-                            <font-awesome-icon icon="fa-solid fa-circle-chevron-down" />
-                            Logout
+                            <font-awesome-icon icon="arrow-right-to-bracket" />
+                            Log Out
                         </button>
                     </ul>
                 </div>
@@ -43,17 +40,12 @@
 
 <script>
 export default {
-    // mounted() {
-    //     if (!this.$store.getters.loggedIn) {
-    //         this.Login()
-    //     }
-    // },
+    mounted() {
+        this.$store.dispatch('getJWT')
+    },
     methods: {
-        Login() {
-            this.$store.dispatch('login')
-        },
         Logout() {
-            this.$store.dispatch('logout')
+            this.$store.dispatch('logOut')
         }
     }
 }
