@@ -4,8 +4,8 @@ import json
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 
-from app1 import create_app
-from database.models import setup_db, Movie, Actor, Casting
+from app import create_app
+from database.models import setup_db, Movie, Actor
 
 load_dotenv()
 
@@ -135,7 +135,7 @@ class AppTestCase(unittest.TestCase):
 
         with self.app.app_context():
             movie = Movie.query.first()
-        res = self.client().patch("/movies/" + str(movie.id), headers=headers)
+        res = self.client().delete("/movies/" + str(movie.id), headers=headers)
 
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
@@ -163,9 +163,9 @@ class AppTestCase(unittest.TestCase):
     
     def test_add_actors(self):
         data = {
-            "name":'Actors 01',
-            "age":'20',
-            "gender":'Male'
+            "name":"Actors 01",
+            "age":"20",
+            "gender":"male"
         }
         headers = {'Authorization': f'Bearer {self.TOKEN}'}
 
@@ -177,9 +177,9 @@ class AppTestCase(unittest.TestCase):
     
     def test_422_for_add_actors(self):
         data = {
-            "name":'Actors 01',
-            "age":'xxx',
-            "gender":'Male'
+            "name":"Actors 01",
+            "age":"xxx",
+            "gender":"male"
         }
         headers = {'Authorization': f'Bearer {self.TOKEN}'}
 
@@ -193,15 +193,15 @@ class AppTestCase(unittest.TestCase):
 
     def test_update_actors(self):
         data = {
-            "name":'Actors The First',
-            "age":'20',
-            "gender":'Male'
+            "name":"Actors The First",
+            "age":"20",
+            "gender":"male"
         }
         headers = {'Authorization': f'Bearer {self.TOKEN}'}
 
         with self.app.app_context():
             actors = Actor.query.first()
-        res = self.client().patch("/actors/" + str(actors.id), headers=headers)
+        res = self.client().patch("/actors/" + str(actors.id), json=data, headers=headers)
 
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
@@ -209,9 +209,9 @@ class AppTestCase(unittest.TestCase):
 
     def test_404_for_update_actors(self):
         data = {
-            "name":'Actors The First',
-            "age":'20',
-            "gender":'Male'
+            "name":"Actors The First",
+            "age":"20",
+            "gender":"male"
         }
         headers = {'Authorization': f'Bearer {self.TOKEN}'}
 
@@ -225,15 +225,15 @@ class AppTestCase(unittest.TestCase):
 
     def test_422_for_update_actors(self):
         data = {
-            "name":'Actors The First',
-            "age":'xxx',
-            "gender":'Male'
+            "name":"Actors The First",
+            "age":"xxx",
+            "gender":"male"
         }
         headers = {'Authorization': f'Bearer {self.TOKEN}'}
 
         with self.app.app_context():
             actors = Actor.query.first()
-        res = self.client().patch("/actors/" + str(actors.id), headers=headers)
+        res = self.client().patch("/actors/" + str(actors.id), json=data, headers=headers)
 
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 422)
@@ -246,7 +246,7 @@ class AppTestCase(unittest.TestCase):
 
         with self.app.app_context():
             actors = Actor.query.first()
-        res = self.client().patch("/actors/" + str(actors.id), headers=headers)
+        res = self.client().delete("/actors/" + str(actors.id), headers=headers)
 
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
@@ -256,6 +256,37 @@ class AppTestCase(unittest.TestCase):
         headers = {'Authorization': f'Bearer {self.TOKEN}'}
 
         res = self.client().delete("/actors/1000", headers=headers)
+
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["error"], 404)
+        self.assertEqual(data["message"], "No Result Found")
+
+    def test_add_casting(self):
+        with self.app.app_context():
+            actors = Actor.query.first()
+            movies = Movie.query.first()
+        data = {
+            "movie":movies.id,
+            "actor":actors.id
+        }
+        headers = {'Authorization': f'Bearer {self.TOKEN}'}
+
+        res = self.client().post("/casting", json=data, headers=headers)
+
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+
+    def test_404_for_add_casting(self):
+        data = {
+            "movie":"1000",
+            "actor":"1000"
+        }
+        headers = {'Authorization': f'Bearer {self.TOKEN}'}
+
+        res = self.client().post("/casting", json=data, headers=headers)
 
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 404)

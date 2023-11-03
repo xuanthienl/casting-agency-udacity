@@ -51,3 +51,9 @@ To start and run the local development server,
 6. Verify on the Browser
 
   Navigate to project homepage [http://127.0.0.1:5000/](http://127.0.0.1:5000/) or [http://localhost:5000](http://localhost:5000) 
+
+7. Test API
+
+  $ cd backend
+  $ source setup.sh
+  $ python3 test_app.py
