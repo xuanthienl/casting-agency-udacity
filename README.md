@@ -9,7 +9,7 @@
 [View the README.md within ./frontend for more details.](./frontend/README.md)
 
 ### Deploy to Heroku
-1/ Copy package.json, requirements.txt to main Folder
+1/ Copy package.json (Edit: "build": "cd frontend && npm run build",), requirements.txt to main Folder
 2/ Create Procfile file with content: "web: gunicorn backend.app:app"
 3/ git init
 4/ heroku create casting-agency-group
